@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">Tip Time</string>
+    <string name="app_name">Propina</string>
     <string name="calculate_tip">Calcular propina</string>
-    <string name="cost_of_service">Coste del servicio</string>
+    <string name="bill_amount">Factura</string>
     <string name="tip_amount">Propina: %s</string>
+    <string name="how_was_the_service">Propina (%)</string>
+    <string name="round_up_tip">Redondear propina?</string>
 </resources>

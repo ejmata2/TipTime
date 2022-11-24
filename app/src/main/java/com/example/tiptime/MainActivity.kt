@@ -3,6 +3,7 @@ package com.example.tiptime
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -46,7 +47,9 @@ class MainActivity : ComponentActivity() {
 fun TipTimeScreen() {
     var cantidadInput by remember { mutableStateOf("") }
     val cantidad = cantidadInput.toDoubleOrNull() ?: 0.0
-    val propina = calcularPropina(cantidad)
+    var propinaInput by remember { mutableStateOf("") }
+    val propinaPorcentaje = propinaInput.toDoubleOrNull() ?: 0.0
+    val propina = calcularPropina(cantidad,propinaPorcentaje)
 
     Column(
         modifier = Modifier.padding(32.dp),
@@ -58,8 +61,15 @@ fun TipTimeScreen() {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        EditNumberField(valor = cantidadInput,
+        EditNumberField(
+            label = R.string.bill_amount,
+            valor = cantidadInput,
             onValorChange = {cantidadInput = it}
+        )
+        EditNumberField(
+            label = R.string.how_was_the_service,
+            valor = propinaInput,
+            onValorChange = { propinaInput =it}
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
@@ -73,13 +83,15 @@ fun TipTimeScreen() {
 
 @Composable
 fun EditNumberField(
+    @StringRes label: Int,
     valor: String,
-    onValorChange: (String) -> Unit
+    onValorChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     TextField(
         value = valor,
         onValueChange = onValorChange,
-        label = {Text(stringResource(id = R.string.cost_of_service))},
+        label = { Text(stringResource(label)) },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
