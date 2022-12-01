@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -22,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,6 +54,7 @@ fun TipTimeScreen() {
     var propinaInput by remember { mutableStateOf("") }
     val propinaPorcentaje = propinaInput.toDoubleOrNull() ?: 0.0
     val propina = calcularPropina(cantidad,propinaPorcentaje)
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier.padding(32.dp),
@@ -68,6 +72,9 @@ fun TipTimeScreen() {
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
             ),
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down)}
+            ),
             valor = cantidadInput,
             onValorChanged = {cantidadInput = it}
         )
@@ -76,6 +83,9 @@ fun TipTimeScreen() {
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+              onDone = { focusManager.clearFocus() }
             ),
             valor = propinaInput,
             onValorChanged = { propinaInput =it}
@@ -94,7 +104,7 @@ fun TipTimeScreen() {
 fun EditNumberField(
     @StringRes label: Int,
     keyboardOptions: KeyboardOptions,
-
+    keyboardActions: KeyboardActions,
     valor: String,
     onValorChanged: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -106,6 +116,7 @@ fun EditNumberField(
         onValueChange = onValorChanged,
         label = { Text(stringResource(label)) },
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
 
