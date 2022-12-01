@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import java.text.NumberFormat
 
@@ -63,13 +64,21 @@ fun TipTimeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         EditNumberField(
             label = R.string.bill_amount,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
             valor = cantidadInput,
-            onValorChange = {cantidadInput = it}
+            onValorChanged = {cantidadInput = it}
         )
         EditNumberField(
             label = R.string.how_was_the_service,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
             valor = propinaInput,
-            onValorChange = { propinaInput =it}
+            onValorChanged = { propinaInput =it}
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
@@ -84,25 +93,27 @@ fun TipTimeScreen() {
 @Composable
 fun EditNumberField(
     @StringRes label: Int,
+    keyboardOptions: KeyboardOptions,
+
     valor: String,
-    onValorChange: (String) -> Unit,
+    onValorChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     TextField(
         value = valor,
-        onValueChange = onValorChange,
-        label = { Text(stringResource(label)) },
-        modifier = Modifier.fillMaxWidth(),
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        modifier = modifier.fillMaxWidth(),
+        onValueChange = onValorChanged,
+        label = { Text(stringResource(label)) },
+        keyboardOptions = keyboardOptions,
     )
 }
 
 private fun calcularPropina(
     cantidad : Double,
-    porcentaje : Double = 0.15
+    porcentaje : Double = 15.0
 ): String {
-    val propina = porcentaje * cantidad
+    val propina = porcentaje * cantidad / 100
     return NumberFormat.getCurrencyInstance().format(propina)
 }
 
