@@ -9,9 +9,14 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class CalculadoraPropinasTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun calcular_20_porciento() {
+        val cantidad = 10.00
+        val porcentaje =20.00
+        val propinaEsperada = "2,00 €"
+        val propina = calcularPropina(cantidad, porcentaje, false)
+
+        assertEquals(propinaEsperada, propina)
     }
 }

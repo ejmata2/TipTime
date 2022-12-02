@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -147,7 +148,8 @@ fun RedondearPropina(
     }
 }
 
-private fun calcularPropina(
+@VisibleForTesting
+internal fun calcularPropina(
     cantidad : Double,
     porcentaje : Double = 15.0,
 redondear: Boolean
