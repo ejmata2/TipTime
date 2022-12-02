@@ -7,10 +7,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -24,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -53,8 +51,11 @@ fun TipTimeScreen() {
     val cantidad = cantidadInput.toDoubleOrNull() ?: 0.0
     var propinaInput by remember { mutableStateOf("") }
     val propinaPorcentaje = propinaInput.toDoubleOrNull() ?: 0.0
-    val propina = calcularPropina(cantidad,propinaPorcentaje)
     val focusManager = LocalFocusManager.current
+    var redondear by remember {
+        mutableStateOf(false)
+    }
+    val propina = calcularPropina(cantidad,propinaPorcentaje, redondear)
 
     Column(
         modifier = Modifier.padding(32.dp),
@@ -90,6 +91,7 @@ fun TipTimeScreen() {
             valor = propinaInput,
             onValorChanged = { propinaInput =it}
         )
+        RedondearPropina(redondear = redondear, siRedondearCambiado = {redondear = it} )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(id = R.string.tip_amount, propina),
@@ -120,11 +122,39 @@ fun EditNumberField(
     )
 }
 
+@Composable
+fun RedondearPropina(
+    redondear: Boolean,
+    siRedondearCambiado: (Boolean) -> Unit,
+    modifier: Modifier = Modifier){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(48.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(id = R.string.round_up_tip))
+        Switch(
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.End),
+            checked = redondear,
+            onCheckedChange = siRedondearCambiado,
+            colors = SwitchDefaults.colors(
+                uncheckedThumbColor = Color.DarkGray
+            )
+        )
+    }
+}
+
 private fun calcularPropina(
     cantidad : Double,
-    porcentaje : Double = 15.0
+    porcentaje : Double = 15.0,
+redondear: Boolean
 ): String {
-    val propina = porcentaje * cantidad / 100
+    var propina = porcentaje * cantidad / 100
+    if(redondear)
+        propina = kotlin.math.ceil(propina)
     return NumberFormat.getCurrencyInstance().format(propina)
 }
 
